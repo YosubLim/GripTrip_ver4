@@ -34,7 +34,7 @@
 
 	<select id="getBookByBookNo" parameterType="int" resultMap="bookListRM">
 		SELECT
-		book_no, book_title, to_char(book_create_date, 'YYYY.MM.DD')
+		book_no, book_title, DATE_FORMAT(book_create_date, '%Y-%m-%d')
 		book_create_date, book_picture_url, book_is_public, book_hit, price
 		FROM book
 		WHERE book_no=#{value}
@@ -44,7 +44,7 @@
 		SELECT
 		book_no,
 		book_title,
-		to_char(book_create_date, 'YYYY.MM.DD') book_create_date,
+		DATE_FORMAT(book_create_date, '%Y-%m-%d') book_create_date,
 		book_picture_url,
 		book_is_public,
 		book_hit,
@@ -62,7 +62,7 @@
 		SELECT
 		book_no,
 		book_title,
-		to_char(book_create_date, 'YYYY.MM.DD') book_create_date,
+		DATE_FORMAT(book_create_date, '%Y-%m-%d') book_create_date,
 		book_picture_url,
 		book_is_public,
 		book_hit,
@@ -154,8 +154,8 @@
 	<!-- 주의 -->
 	<select id="searchBook" parameterType="string" resultMap="bookListRM">
 		SELECT
-		DISTINCT b.book_no, book_title, to_char(book_create_date,
-		'YYYY.MM.DD') book_create_date, book_picture_url, book_is_public,
+		DISTINCT b.book_no, book_title, DATE_FORMAT(book_create_date,
+		'%Y-%m-%d') book_create_date, book_picture_url, book_is_public,
 		book_hit, b.bookmark
 		FROM book b, story s
 		WHERE ((book_title LIKE '%'||
@@ -174,7 +174,7 @@
 
 	<select id="searchBookByTitle" resultMap="bookListRM">
 		SELECT DISTINCT
-		b.book_no, book_title, to_char(book_create_date, 'YYYY.MM.DD')
+		b.book_no, book_title, DATE_FORMAT(book_create_date, '%Y-%m-%d')
 		book_create_date, book_picture_url, book_is_public, book_hit,
 		b.bookmark
 		from book b
@@ -186,7 +186,7 @@
 
 	<select id="searchBookByContent" resultMap="bookListRM">
 		SELECT DISTINCT
-		b.book_no, book_title, to_char(book_create_date, 'YYYY.MM.DD')
+		b.book_no, book_title, DATE_FORMAT(book_create_date, '%Y-%m-%d')
 		book_create_date, book_picture_url, book_is_public, book_hit,
 		b.bookmark
 		from book b, story s
@@ -199,7 +199,7 @@
 
 	<select id="searchBookByLocation" resultMap="bookListRM">
 		SELECT DISTINCT
-		b.book_no, book_title, to_char(book_create_date, 'YYYY.MM.DD')
+		b.book_no, book_title, DATE_FORMAT(book_create_date, '%Y-%m-%d')
 		book_create_date, book_picture_url, book_is_public, book_hit,
 		b.bookmark
 		FROM book b WHERE book_no IN(
@@ -216,7 +216,7 @@
 		SELECT
 		book_no,
 		book_title,
-		to_char(book_create_date, 'YYYY.MM.DD') book_create_date,
+		DATE_FORMAT(book_create_date, '%Y-%m-%d') book_create_date,
 		book_picture_url,
 		book_is_public,
 		book_hit,
@@ -230,7 +230,7 @@
 	<select id="searchBookOrderByHit" parameterType="string"
 		resultMap="bookListRM">
 		SELECT DISTINCT b.book_no, book_title,
-		to_char(book_create_date, 'YYYY.MM.DD') book_create_date,
+		DATE_FORMAT(book_create_date, '%Y-%m-%d') book_create_date,
 		book_picture_url, book_is_public, book_hit, b.bookmark
 		FROM book b,
 		story s
@@ -250,8 +250,8 @@
 
 	<select id="searchBookByTitleOrderByHit" resultMap="bookListRM">
 		SELECT
-		DISTINCT b.book_no, book_title, to_char(book_create_date,
-		'YYYY.MM.DD') book_create_date, book_picture_url, book_is_public,
+		DISTINCT b.book_no, book_title, DATE_FORMAT(book_create_date,
+		'%Y-%m-%d') book_create_date, book_picture_url, book_is_public,
 		book_hit, b.bookmark
 		from book b
 		WHERE book_title LIKE '%'|| #{value} || '%'
@@ -262,8 +262,8 @@
 
 	<select id="searchBookByContentOrderByHit" resultMap="bookListRM">
 		SELECT
-		DISTINCT b.book_no, book_title, to_char(book_create_date,
-		'YYYY.MM.DD') book_create_date, book_picture_url, book_is_public,
+		DISTINCT b.book_no, book_title, DATE_FORMAT(book_create_date,
+		'%Y-%m-%d') book_create_date, book_picture_url, book_is_public,
 		book_hit, b.bookmark
 		from book b, story s
 		WHERE book_is_public='public'
@@ -275,8 +275,8 @@
 
 	<select id="searchBookByLocationOrderByHit" resultMap="bookListRM">
 		SELECT
-		DISTINCT b.book_no, book_title, to_char(book_create_date,
-		'YYYY.MM.DD') book_create_date, book_picture_url, book_is_public,
+		DISTINCT b.book_no, book_title, DATE_FORMAT(book_create_date,
+		'%Y-%m-%d') book_create_date, book_picture_url, book_is_public,
 		book_hit, b.bookmark
 		FROM book b WHERE book_no IN(
 		SELECT DISTINCT book_no FROM story WHERE
@@ -291,7 +291,7 @@
 		SELECT
 		book_no,
 		book_title,
-		to_char(book_create_date, 'YYYY.MM.DD') book_create_date,
+		DATE_FORMAT(book_create_date, '%Y-%m-%d') book_create_date,
 		book_picture_url,
 		book_is_public,
 		book_hit,
@@ -306,7 +306,7 @@
 	<select id="searchBookOrderByBookmark" parameterType="string"
 		resultMap="bookListRM">
 		SELECT DISTINCT b.book_no, book_title,
-		to_char(book_create_date, 'YYYY.MM.DD') book_create_date,
+		DATE_FORMAT(book_create_date, '%Y-%m-%d') book_create_date,
 		book_picture_url, book_is_public, book_hit,
 		b.bookmark,b.bookmark_count
 		FROM book b, story s
@@ -328,8 +328,8 @@
 
 	<select id="searchBookByTitleOrderByBookmark" resultMap="bookListRM">
 		SELECT
-		DISTINCT b.book_no, book_title, to_char(book_create_date,
-		'YYYY.MM.DD') book_create_date, book_picture_url, book_is_public,
+		DISTINCT b.book_no, book_title, DATE_FORMAT(book_create_date,
+		'%Y-%m-%d') book_create_date, book_picture_url, book_is_public,
 		book_hit, b.bookmark, b.bookmark_count
 		from book b
 		WHERE book_title LIKE
@@ -340,8 +340,8 @@
 	</select>
 
 	<select id="searchBookByContentOrderByBookmark" resultMap="bookListRM">
-		SELECT DISTINCT b.book_no, book_title, to_char(book_create_date,
-		'YYYY.MM.DD') book_create_date, book_picture_url, book_is_public,
+		SELECT DISTINCT b.book_no, book_title, DATE_FORMAT(book_create_date,
+		'%Y-%m-%d') book_create_date, book_picture_url, book_is_public,
 		book_hit, b.bookmark, b.bookmark_count
 		from book b, story s
 		WHERE
@@ -353,8 +353,8 @@
 	</select>
 
 	<select id="searchBookByLocationOrderByBookmark" resultMap="bookListRM">
-		SELECT DISTINCT b.book_no, book_title, to_char(book_create_date,
-		'YYYY.MM.DD') book_create_date, book_picture_url, book_is_public,
+		SELECT DISTINCT b.book_no, book_title, DATE_FORMAT(book_create_date,
+		'%Y-%m-%d') book_create_date, book_picture_url, book_is_public,
 		book_hit, b.bookmark, b.bookmark_count
 		FROM book b WHERE book_no IN(
 		SELECT DISTINCT book_no FROM story WHERE
