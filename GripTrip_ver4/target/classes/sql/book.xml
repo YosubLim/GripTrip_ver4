@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="bookMapper">
+
+	<insert id="insertwriteBook" parameterType="book">
+		<selectKey keyProperty="book_no" resultType="int" order="BEFORE">
+			SELECT book_seq.nextVal FROM dual
+		</selectKey>
+		INSERT
+		INTO book(book_no, book_title, book_create_date,
+		book_picture_url, book_is_public, book_hit, price, bookmark_count)
+		VALUES(#{book_no}, #{book_title}, sysdate, #{book_picture_url},
+		#{book_is_public}, #{book_hit}, #{price}, 0)
+	</insert>
+
+	<select id="selectByNoForDate" parameterType="int" resultType="string">
+		SELECT
+		book_create_date
+		FROM book
+		WHERE book_no=#{value}
+	</select>
+
+	<resultMap type="book" id="bookListRM">
+		<result property="book_no" column="book_no" />
+		<result property="book_title" column="book_title" />
+		<result property="book_create_date" column="book_create_date" />
+		<result property="book_picture_url" column="book_picture_url" />
+		<result property="book_is_public" column="book_is_public" />
+		<result property="book_hit" column="book_hit" />
+		<result property="bookmark" column="bookmark" />
+	</resultMap>
+
+	<select id="getBookByBookNo" parameterType="int" resultMap="bookListRM">
+		SELECT
+		book_no, book_title, to_char(book_create_date, 'YYYY.MM.DD')
+		book_create_date, book_picture_url, book_is_public, book_hit, price
+		FROM book
+		WHERE book_no=#{value}
+	</select>
+
+	<select id="getOtherBookList" resultMap="bookListRM" parameterType="string">
+		SELECT
+		book_no,
+		book_title,
+		to_char(book_create_date, 'YYYY.MM.DD') book_create_date,
+		book_picture_url,
+		book_is_public,
+		book_hit,
+		bookmark
+		FROM book
+		WHERE book_is_public='public' AND
+		book_no NOT IN
+		(SELECT book_no FROM member m, `write` w WHERE m.email=#{value} AND
+		w.email=#{value})
+		ORDER BY book_no DESC
+	</select>
+
+	<select id="getAllBookList" resultMap="bookListRM"
+		parameterType="string">
+		SELECT
+		book_no,
+		book_title,
+		to_char(book_create_date, 'YYYY.MM.DD') book_create_date,
+		book_picture_url,
+		book_is_public,
+		book_hit,
+		bookmark
+		FROM book
+		WHERE book_is_public='public'
+		ORDER BY book_no DESC
+	</select>
+
+	<update id="updateHit" parameterType="int">
+		UPDATE book SET book_hit = nvl(book_hit, 0)+1 WHERE book_no=#{value}
+		<!-- UPDATE book SET book_hit=book_hit+1 WHERE book_no=#{value} -->
+	</update>
+
+	<update id="updateBook" parameterType="book">
+		UPDATE book
+		SET book_title=
+		#{book_title}, book_picture_url=#{book_picture_url},
+		book_is_public=#{book_is_public}
+		WHERE book_no=#{book_no}
+	</update>
+
+	<delete id="deleteBook" parameterType="int">
+		DELETE FROM book
+		WHERE
+		book_no=#{value}
+	</delete>
+
+	<select id="getNickName" parameterType="int" resultType="String">
+		SELECT
+		DISTINCT nickname from member m, `write` w WHERE m.email
+		=(SELECT email
+		from book b, `write` w WHERE w.book_no=#{value} AND b.book_no=#{value})
+	</select>
+	<!-- -->
+	<select id="maxBookNo" resultType="int">
+		select max(book_no) from book
+	</select>
+
+	<select id="getMyBookList" parameterType="string" resultMap="bookListRM">
+		SELECT
+		book_no, book_title, DATE_FORMAT(book_create_date, '%Y-%m-%d') , book_create_date,
+		book_picture_url, book_is_public, book_hit
+		FROM book WHERE book_no IN
+		(SELECT book_no FROM member m, `write` w WHERE m.email=#{value} AND
+		w.email=#{value})
+		ORDER BY book_no DESC
+	</select>
+
+	<update id="updateBookmark">
+		UPDATE book
+		SET bookmark='true'
+		WHERE book_no=#{value}
+	</update>
+
+	<update id="deleteBookmark">
+		UPDATE book
+		SET bookmark='false'
+		WHERE book_no=#{value}
+	</update>
+
+	<update id="upBookmarkCount">
+		UPDATE book
+		SET bookmark_count=bookmark_count+1
+		WHERE
+		book_no=#{value}
+	</update>
+
+	<update id="downBookmarkCount">
+		UPDATE book
+		SET bookmark_count=bookmark_count-1
+		WHERE
+		book_no=#{value}
+	</update>
+
+	<select id="getEmailByBookNo" resultType="string" parameterType="int">
+		SELECT DISTINCT w.email
+		FROM `write` w
+		WHERE w.book_no=#{value}
+	</select>
+
+	<!-- book.xml에 추가 -->
+	<delete id="deleteBookByEmail" parameterType="string">
+		DELETE FROM book WHERE book_no IN(
+		SELECT book_no FROM member m, `write` w
+		WHERE m.email=#{value} AND w.email=#{value})
+	</delete>
+
+	<!-- 주의 -->
+	<select id="searchBook" parameterType="string" resultMap="bookListRM">
+		SELECT
+		DISTINCT b.book_no, book_title, to_char(book_create_date,
+		'YYYY.MM.DD') book_create_date, book_picture_url, book_is_public,
+		book_hit, b.bookmark
+		FROM book b, story s
+		WHERE ((book_title LIKE '%'||
+		#{value} || '%')
+		OR (b.book_no IN
+		(SELECT DISTINCT s.book_no FROM story
+		WHERE s.story_content LIKE '%'|| #{value} ||'%'))
+		OR (b.book_no IN (
+		SELECT DISTINCT book_no FROM story WHERE story_no IN(
+		SELECT DISTINCT
+		story_no FROM story WHERE story_location LIKE '%' || #{value} ||
+		'%'))))
+		AND book_is_public='public'
+		ORDER BY book_no DESC
+	</select>
+
+	<select id="searchBookByTitle" resultMap="bookListRM">
+		SELECT DISTINCT
+		b.book_no, book_title, to_char(book_create_date, 'YYYY.MM.DD')
+		book_create_date, book_picture_url, book_is_public, book_hit,
+		b.bookmark
+		from book b
+		WHERE book_title LIKE '%'|| #{value} || '%'
+		AND
+		book_is_public='public'
+		ORDER BY book_no DESC
+	</select>
+
+	<select id="searchBookByContent" resultMap="bookListRM">
+		SELECT DISTINCT
+		b.book_no, book_title, to_char(book_create_date, 'YYYY.MM.DD')
+		book_create_date, book_picture_url, book_is_public, book_hit,
+		b.bookmark
+		from book b, story s
+		WHERE book_is_public='public'
+		AND b.book_no IN
+		(SELECT s.book_no FROM story WHERE s.story_content LIKE
+		'%'|| #{value} ||'%')
+		ORDER BY book_no DESC
+	</select>
+
+	<select id="searchBookByLocation" resultMap="bookListRM">
+		SELECT DISTINCT
+		b.book_no, book_title, to_char(book_create_date, 'YYYY.MM.DD')
+		book_create_date, book_picture_url, book_is_public, book_hit,
+		b.bookmark
+		FROM book b WHERE book_no IN(
+		SELECT DISTINCT book_no FROM story WHERE
+		story_no IN(
+		SELECT story_no FROM story WHERE story_location LIKE
+		'%'||#{value}||'%'))
+		ORDER BY book_no DESC
+	</select>
+
+	<!-- 7/10 -->
+	<select id="getAllBookListOrderByHit" resultMap="bookListRM"
+		parameterType="string"><!-- 나 포함 전체 북리스트 받아오는 것 -->
+		SELECT
+		book_no,
+		book_title,
+		to_char(book_create_date, 'YYYY.MM.DD') book_create_date,
+		book_picture_url,
+		book_is_public,
+		book_hit,
+		bookmark
+		FROM book
+		WHERE book_is_public='public'
+		ORDER BY book_hit DESC,
+		b.book_no DESC
+	</select>
+
+	<select id="searchBookOrderByHit" parameterType="string"
+		resultMap="bookListRM">
+		SELECT DISTINCT b.book_no, book_title,
+		to_char(book_create_date, 'YYYY.MM.DD') book_create_date,
+		book_picture_url, book_is_public, book_hit, b.bookmark
+		FROM book b,
+		story s
+		WHERE ((book_title LIKE '%'|| #{value} || '%')
+		OR (b.book_no IN
+		(SELECT DISTINCT s.book_no FROM story WHERE s.story_content LIKE '%'||
+		#{value} ||'%'))
+		OR (b.book_no IN (
+		SELECT DISTINCT book_no FROM story
+		WHERE story_no IN(
+		SELECT DISTINCT story_no FROM story WHERE
+		story_location LIKE '%' || #{value} || '%'))))
+		AND
+		book_is_public='public'
+		ORDER BY book_hit DESC, b.book_no DESC
+	</select>
+
+	<select id="searchBookByTitleOrderByHit" resultMap="bookListRM">
+		SELECT
+		DISTINCT b.book_no, book_title, to_char(book_create_date,
+		'YYYY.MM.DD') book_create_date, book_picture_url, book_is_public,
+		book_hit, b.bookmark
+		from book b
+		WHERE book_title LIKE '%'|| #{value} || '%'
+		AND
+		book_is_public='public'
+		ORDER BY book_hit DESC, b.book_no DESC
+	</select>
+
+	<select id="searchBookByContentOrderByHit" resultMap="bookListRM">
+		SELECT
+		DISTINCT b.book_no, book_title, to_char(book_create_date,
+		'YYYY.MM.DD') book_create_date, book_picture_url, book_is_public,
+		book_hit, b.bookmark
+		from book b, story s
+		WHERE book_is_public='public'
+		AND b.book_no IN
+		(SELECT s.book_no FROM story WHERE s.story_content LIKE
+		'%'|| #{value} ||'%')
+		ORDER BY book_hit DESC, b.book_no DESC
+	</select>
+
+	<select id="searchBookByLocationOrderByHit" resultMap="bookListRM">
+		SELECT
+		DISTINCT b.book_no, book_title, to_char(book_create_date,
+		'YYYY.MM.DD') book_create_date, book_picture_url, book_is_public,
+		book_hit, b.bookmark
+		FROM book b WHERE book_no IN(
+		SELECT DISTINCT book_no FROM story WHERE
+		story_no IN(
+		SELECT story_no FROM story WHERE story_location LIKE
+		'%'||#{value}||'%'))
+		ORDER BY book_hit DESC, b.book_no DESC
+	</select>
+
+	<select id="getAllBookListOrderByBookmark" resultMap="bookListRM"
+		parameterType="string"><!-- 나 포함 전체 북리스트 받아오는 것 -->
+		SELECT
+		book_no,
+		book_title,
+		to_char(book_create_date, 'YYYY.MM.DD') book_create_date,
+		book_picture_url,
+		book_is_public,
+		book_hit,
+		bookmark,
+		b.bookmark_count
+		FROM book
+		WHERE book_is_public='public'
+		ORDER
+		BY bookmark_count DESC, b.book_no DESC
+	</select>
+
+	<select id="searchBookOrderByBookmark" parameterType="string"
+		resultMap="bookListRM">
+		SELECT DISTINCT b.book_no, book_title,
+		to_char(book_create_date, 'YYYY.MM.DD') book_create_date,
+		book_picture_url, book_is_public, book_hit,
+		b.bookmark,b.bookmark_count
+		FROM book b, story s
+		WHERE ((book_title LIKE
+		'%'|| #{value} || '%')
+		OR (b.book_no IN
+		(SELECT DISTINCT s.book_no FROM
+		story WHERE s.story_content LIKE '%'|| #{value} ||'%'))
+		OR (b.book_no
+		IN (
+		SELECT DISTINCT book_no FROM story WHERE story_no IN(
+		SELECT
+		DISTINCT story_no FROM story WHERE story_location LIKE '%' || #{value}
+		|| '%'))))
+		AND book_is_public='public'
+		ORDER BY b.bookmark_count DESC,
+		b.book_no DESC
+	</select>
+
+	<select id="searchBookByTitleOrderByBookmark" resultMap="bookListRM">
+		SELECT
+		DISTINCT b.book_no, book_title, to_char(book_create_date,
+		'YYYY.MM.DD') book_create_date, book_picture_url, book_is_public,
+		book_hit, b.bookmark, b.bookmark_count
+		from book b
+		WHERE book_title LIKE
+		'%'|| #{value} || '%'
+		AND book_is_public='public'
+		ORDER BY
+		b.bookmark_count DESC, b.book_no DESC
+	</select>
+
+	<select id="searchBookByContentOrderByBookmark" resultMap="bookListRM">
+		SELECT DISTINCT b.book_no, book_title, to_char(book_create_date,
+		'YYYY.MM.DD') book_create_date, book_picture_url, book_is_public,
+		book_hit, b.bookmark, b.bookmark_count
+		from book b, story s
+		WHERE
+		book_is_public='public'
+		AND b.book_no IN
+		(SELECT s.book_no FROM story WHERE s.story_content LIKE
+		'%'|| #{value} ||'%')
+		ORDER BY b.bookmark_count DESC, b.book_no DESC
+	</select>
+
+	<select id="searchBookByLocationOrderByBookmark" resultMap="bookListRM">
+		SELECT DISTINCT b.book_no, book_title, to_char(book_create_date,
+		'YYYY.MM.DD') book_create_date, book_picture_url, book_is_public,
+		book_hit, b.bookmark, b.bookmark_count
+		FROM book b WHERE book_no IN(
+		SELECT DISTINCT book_no FROM story WHERE
+		story_no IN(
+		SELECT story_no FROM story WHERE story_location LIKE
+		'%'||#{value}||'%'))
+		ORDER BY b.bookmark_count DESC, b.book_no DESC
+	</select>
+
+	<select id="totalCount" resultType="int">
+		SELECT COUNT(-1) FROM book
+	</select>
+
+</mapper>
+   

@@ -1,0 +1,83 @@
+.comments {
+    margin-top: 50px;
+    margin-left: 50px;
+    width: 612px;
+    padding: 0 20px 0 30px;
+}
+
+.comment1 {
+    background-color: #FFF;
+    padding: 10px;
+    font-size: 16px;
+    font-family: Tahoma, Arial;
+    border: 1px solid #CCC;
+    line-height: 1.7;
+    position: relative
+}
+
+
+.comment1:after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-color: transparent #CCC transparent transparent;
+    border-width: 8px;
+    position: absolute;
+    left: -17px;
+    top: 10px
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 공개/비공개 */
+.checkbox-custom, .radio-custom {
+    opacity: 0;
+    position: absolute;
+}
+
+.checkbox-custom, .checkbox-custom-label, .radio-custom, .radio-custom-label {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.checkbox-custom-label, .radio-custom-label {
+    position: relative;
+}
+
+.checkbox-custom + .checkbox-custom-label:before, .radio-custom + .radio-custom-label:before {
+    content: '';
+    background: #fff;
+    
+    display: inline-block;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    
+    margin-right: 10px;
+    text-align: center;
+    
+}
+
+.radio-custom + .radio-custom-label:before {
+    border-radius: 50%;
+    margin: 10px;
+}
+
+.radio-custom:checked + .radio-custom-label:before {
+    content: "\f00c";
+    font-family: 'FontAwesome';
+    color: #bbb;
+}

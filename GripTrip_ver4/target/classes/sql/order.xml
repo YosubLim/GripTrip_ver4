@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="orderMapper">
+	
+	<insert id="orderBook" parameterType="order">
+		<selectKey keyProperty="orderNo" resultType="int" order="BEFORE">
+			SELECT book_order_seq.nextVal FROM dual
+		</selectKey>
+		INSERT INTO book_order (order_no, email, book_no, quantity, order_create_date, total_price )
+		VALUES(#{orderNo}, #{member.email}, #{book.book_no}, #{quantity}, sysdate, #{totalPrice})
+	</insert>
+	
+	<delete id="cancelOrder" parameterType="int" >
+		DELETE FROM book_order
+		WHERE order_no=#{value}
+	</delete>
+	
+	<resultMap type="order" id="orderListRm">
+		<result property="orderNo" column="order_no"/>
+		<result property="quantity" column="quantity"/>
+		<result property="orderCreateDate" column="order_create_date"/>
+		<result property="member.email" column="email"/>
+		<result property="book.book_no" column="book_no"/>
+		<result property="totalPrice" column="total_price"/>
+	</resultMap>
+	
+	<select id="showOrderInfo" parameterType="int" resultMap="orderListRm">
+		SELECT order_no, quantity, order_create_date, email, book_no, total_price
+		FROM book_order
+		WHERE order_no=#{value}
+	</select>
+	
+	<select id="getOrderListOfMember" parameterType="string" resultMap="orderListRm">
+		SELECT DISTINCT order_no, quantity, book_no, total_price
+		FROM book_order
+		WHERE email=#{value}
+	</select>	
+</mapper>
+   

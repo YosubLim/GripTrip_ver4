@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="writeMapper">
+
+	<insert id="insertWrite" parameterType="write">
+		<selectKey keyProperty="write_no" resultType="int" order="BEFORE">
+			select write_seq.nextVal from dual
+		</selectKey>
+		INSERT
+		INTO write(write_no, email, book_no)
+		VALUES(#{write_no},
+		#{email}, #{book_no})
+	</insert>
+
+</mapper>
+
+
+
+
+
+
+

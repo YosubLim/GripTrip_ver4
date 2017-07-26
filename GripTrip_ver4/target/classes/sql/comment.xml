@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="commentMapper">
+	<!-- RESULTMAP : selectCommentRM -->
+	<resultMap type="comment" id="selectCommentRM">
+		<result property="commentNo" column="comment_no" />
+		<result property="member.email" column="email" />
+		<result property="story.storyNo" column="story_no" />
+		<result property="commentContent" column="comment_content" />
+		<result property="commentCreateDate" column="comment_create_date" />
+		<result property="commentIsPublic" column="comment_is_public" />
+		<result property="parentCommentNo" column="parent_comment_no" />
+		<result property="parentCommentEmail" column="parent_comment_email" />
+		<result property="groupId" column="group_id" />
+		<result property="orderId" column="order_id" />
+		<result property="depth" column="depth" />
+	</resultMap>
+
+	<!-- INSERT : writeComment -->
+	<insert id="writeComment" parameterType="comment">
+		<selectKey keyProperty="commentNo" order="BEFORE"
+			resultType="int">
+			SELECT story_comment_seq.nextVal FROM dual
+		</selectKey>
+		INSERT INTO story_comment
+		(comment_no,
+		email,
+		story_no,
+		comment_content,
+		comment_create_date,
+		comment_is_public,
+		parent_comment_no,
+		parent_comment_email,
+		group_id,
+		order_id,
+		depth
+		)
+		VALUES(#{commentNo},
+		#{member.email},
+		#{story.storyNo},
+		#{commentContent},
+		sysdate,
+		#{commentIsPublic},
+		#{parentCommentNo},
+		#{parentCommentEmail},
+		#{commentNo},
+		#{orderId},
+		#{depth})
+	</insert>
+
+	<!-- INSERT : writeRecomment -->
+	<insert id="writeRecomment" parameterType="comment">
+		<selectKey keyProperty="commentNo" order="BEFORE"
+			resultType="int">
+			SELECT story_comment_seq.nextVal FROM dual
+		</selectKey>
+		INSERT INTO story_comment
+		(comment_no,
+		email,
+		story_no,
+		comment_content,
+		comment_create_date,
+		comment_is_public,
+		parent_comment_no,
+		parent_comment_email,
+		group_id,
+		order_id,
+		depth
+		)
+		VALUES(#{commentNo},
+		#{member.email},
+		#{story.storyNo},
+		#{commentContent},
+		sysdate,
+		#{commentIsPublic},
+		#{parentCommentNo},
+		#{parentCommentEmail},
+		#{groupId},
+		#{orderId},
+		#{depth})
+	</insert>
+
+	<!-- UPDATE : updateComment -->
+	<update id="updateComment" parameterType="comment">
+		UPDATE story_comment
+		SET comment_content=#{commentContent},
+		comment_is_public=#{commentIsPublic}
+		WHERE comment_no=#{commentNo}
+	</update>
+
+	<!-- DELETE : removeComment -->
+	<delete id="removeComment" parameterType="string">
+		DELETE FROM story_comment
+		WHERE comment_no = #{value}
+	</delete>
+
+	<!-- SELECT : getMaxOrderIdWithSameDepth -->
+	<select id="getMaxOrderIdWithSameDepth" parameterType="comment"
+		resultType="int">
+		SELECT NVL((SELECT order_id FROM
+		(SELECT order_id FROM story_comment
+		where group_id=#{groupId}
+		AND depth=#{depth} ORDER BY order_id DESC)
+		WHERE rownum=1), 0) FROM dual
+	</select>
+
+	<!-- SELECT : showAllVisibleCommentsOfStory -->
+	<select id="showAllVisibleCommentsOfStory" parameterType="story"
+		resultMap="selectCommentRM">
+		SELECT comment_no,
+		email,
+		story_no,
+		comment_content,
+		comment_create_date,
+		comment_is_public,
+		parent_comment_no,
+		parent_comment_email,
+		group_id,
+		order_id,
+		depth
+		FROM story_comment
+		WHERE story_no = #{storyNo} AND
+		(comment_is_public = 'public' OR
+		group_id IN (SELECT DISTINCT comment_no FROM story_comment WHERE email =
+		#{member.email}) OR
+		parent_comment_email=#{member.email} OR
+		(SELECT email FROM story WHERE story_no = #{storyNo}) = #{member.email} OR
+		email = #{member.email})
+		ORDER BY group_id ASC, order_id ASC, depth ASC, comment_no DESC
+	</select>
+
+	<select id="countComment" parameterType="string" resultType="int">
+		SELECT
+		count(-1)
+		from story_comment
+		where story_no=#{value}
+	</select>
+</mapper>

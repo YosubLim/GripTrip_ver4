@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="storyMapper">
+	<!-- sql 모듈화 -->
+	<sql id="select-story">
+		story_no, s.book_no, s.email, story_title, story_content, story_Location,
+		to_char(story_Trip_Date, 'YYYY/MM/DD') story_Trip_Date,
+		story_picture_url, story_is_public, story_hit,
+		to_char(story_create_date, 'YYYY/MM/DD') story_create_date,
+		story_latitude, story_longitude, s.bookmark, s.bookmark_count
+	</sql>
+
+	<resultMap type="story" id="storyList">
+		<result property="storyNo" column="story_no" />
+		<result property="storyTitle" column="story_title" />
+		<result property="storyContent" column="story_content" />
+		<result property="storyLocation" column="story_location" />
+		<result property="storyTripDate" column="story_trip_date" />
+		<result property="storyPictureUrl" column="story_picture_url" />
+		<result property="storyIsPublic" column="story_is_public" />
+		<result property="storyHit" column="story_hit" />
+		<result property="storyCreateDate" column="story_create_date" />
+		<result property="storyLatitude" column="story_latitude" />
+		<result property="storyLongitude" column="story_longitude" />
+		<result property="bookmark" column="bookmark" />
+		<result property="bookmark_count" column="bookmark_count" />
+		<result property="book.book_no" column="book_no" />
+		<result property="member.email" column="email" />
+		<!-- 추가 -->
+		<!-- <result property="member.nickname" column="nickname"/> -->
+	</resultMap>
+
+	<delete id="deleteStory" parameterType="int">
+		DELETE FROM story WHERE story_no=${value}
+	</delete>
+
+	<select id="getStoryByStoryNo" parameterType="int" resultMap="storyList">
+		SELECT
+		<include refid="select-story" />
+		FROM story s
+		WHERE s.story_no=#{value}
+	</select>
+
+	<!-- <select id="showStory" parameterType="int" resultMap="storyList"> SELECT 
+		<include refid="select-story"/> FROM story s, member m WHERE s.email=m.email 
+		AND s.story_no=#{value} </select> -->
+
+	<insert id="insertStoryInfo" parameterType="story">
+		<selectKey keyProperty="storyNo" resultType="int" order="BEFORE">
+			SELECT story_seq.nextVal FROM dual
+		</selectKey>
+		INSERT INTO story
+		VALUES(
+		#{storyNo},
+		#{book.book_no},
+		#{member.email},
+		#{storyTitle},
+		#{storyContent},
+		#{storyLocation},
+		#{storyTripDate},
+		#{storyPictureUrl},
+		#{storyIsPublic},
+		#{storyHit},
+		sysdate,
+		#{storyLatitude},
+		#{storyLongitude},
+		#{bookmark},
+		0)
+	</insert>
+
+	<update id="updateStory" parameterType="story">
+		UPDATE story
+		SET story_title = #{storyTitle},
+		story_content = #{storyContent},
+		story_location = #{storyLocation},
+		story_trip_date = #{storyTripDate},
+		story_picture_url = #{storyPictureUrl},
+		story_is_public = #{storyIsPublic},
+		story_latitude = #{storyLatitude},
+		story_longitude = #{storyLongitude}
+		WHERE story_no = #{storyNo}
+	</update>
+
+	<update id="upStoryHit" parameterType="int">
+		UPDATE story
+		SET story_hit = story_hit+1
+		WHERE story_no = #{value}
+	</update>
+
+	<select id="getStoryLocation" resultType="string" parameterType="story">
+		SELECT story_location
+		from story
+		WHERE story_latitude=#{storyLatitude} and story_longitude=#{storyLongitude}
+	</select>
+
+	<select id="showStoryList" parameterType="int" resultMap="storyList">
+		SELECT
+		<include refid="select-story" />
+		FROM story s, book b WHERE s.book_no=b.book_no
+		AND s.book_no=#{value}
+		ORDER BY story_no DESC
+	</select>
+
+	<update id="deleteUrl" parameterType="int">
+		UPDATE story
+		SET
+		story_picture_url=null
+		WHERE story_no = #{value}
+	</update>
+
+	<update id="updateStoryBookmark" parameterType="string">
+		UPDATE story
+		SET bookmark='true'
+		WHERE story_no=#{value}
+	</update>
+
+	<update id="deleteStoryBookmark" parameterType="string">
+		UPDATE story SET
+		bookmark='false'
+		WHERE story_no=#{value}
+	</update>
+
+	<update id="upStoryBookmarkCount">
+		UPDATE story
+		SET bookmark_count=bookmark_count+1
+		WHERE
+		story_no=#{value}
+	</update>
+
+	<update id="downStoryBookmarkCount">
+		UPDATE story
+		SET bookmark_count=bookmark_count-1
+		WHERE
+		story_no=#{value}
+	</update>
+
+	<!-- 7/5 검색 추가 -->
+	<select id="allStoryList" resultMap="storyList">
+		SELECT
+		<include refid="select-story" />
+		FROM story s
+		WHERE s.story_is_public='public'
+		ORDER BY story_no DESC
+	</select>
+
+	<select id="otherStoryList" resultMap="storyList">
+		SELECT
+		<include refid="select-story" />
+		FROM story s
+		WHERE s.email != #{value}
+		AND s.story_is_public='public'
+		ORDER BY story_no DESC
+	</select>
+
+	<select id="searchStory" resultMap="storyList" parameterType="string">
+		SELECT DISTINCT
+		<include refid="select-story" />
+		FROM story s
+		where story_is_public='public'
+		AND ((s.story_title LIKE '%'
+		|| #{value} || '%')
+		OR (s.story_content LIKE '%' || #{value} || '%')
+		OR
+		(s.story_location LIKE '%' || #{value} || '%'))
+		ORDER BY story_no DESC
+	</select>
+
+	<select id="searchStoryByTitle" resultMap="storyList"
+		parameterType="string">
+		SELECT DISTINCT
+		<include refid="select-story" />
+		FROM story s
+		where story_is_public='public'
+		AND s.story_title LIKE '%'
+		|| #{value} || '%'
+		ORDER BY story_no DESC
+	</select>
+
+	<select id="searchStoryByContent" resultMap="storyList"
+		parameterType="string">
+		SELECT DISTINCT
+		<include refid="select-story" />
+		FROM story s
+		where story_is_public='public'
+		AND s.story_content LIKE '%'
+		|| #{value} || '%'
+		ORDER BY story_no DESC
+	</select>
+
+	<select id="searchStoryByLocation" resultMap="storyList"
+		parameterType="string">
+		SELECT DISTINCT
+		<include refid="select-story" />
+		FROM story s
+		where story_is_public='public'
+		AND s.story_location LIKE
+		'%' || #{value} || '%'
+		ORDER BY story_no DESC
+	</select>
+
+	<select id="getStoryCountOfBook" parameterType="int" resultType="int">
+		SELECT COUNT(-1)
+		FROM story
+		WHERE book_no = #{value}
+	</select>
+
+	<!-- 7/10 -->
+	<select id="allStoryListByHit" resultMap="storyList">
+		SELECT
+		<include refid="select-story" />
+		FROM story s
+		WHERE s.story_is_public='public'
+		ORDER BY story_hit DESC,
+		story_no DESC
+	</select>
+
+	<select id="searchStoryOrderByHit" resultMap="storyList"
+		parameterType="string">
+		SELECT DISTINCT
+		<include refid="select-story" />
+		FROM story s
+		where story_is_public='public'
+		AND ((s.story_title LIKE '%'
+		|| #{value} || '%')
+		OR (s.story_content LIKE '%' || #{value} || '%')
+		OR
+		(s.story_location LIKE '%' || #{value} || '%'))
+		ORDER BY story_hit
+		DESC, story_no DESC
+	</select>
+
+	<select id="searchStoryByTitleOrderByHit" resultMap="storyList"
+		parameterType="string">
+		SELECT DISTINCT
+		<include refid="select-story" />
+		FROM story s
+		where story_is_public='public'
+		AND s.story_title LIKE '%'
+		|| #{value} || '%'
+		ORDER BY story_hit DESC, story_no DESC
+	</select>
+
+	<select id="searchStoryByContentOrderByHit" resultMap="storyList"
+		parameterType="string">
+		SELECT DISTINCT
+		<include refid="select-story" />
+		FROM story s
+		where story_is_public='public'
+		AND s.story_content LIKE '%'
+		|| #{value} || '%'
+		ORDER BY story_hit DESC, story_no DESC
+	</select>
+
+	<select id="searchStoryByLocationOrderByHit" resultMap="storyList"
+		parameterType="string">
+		SELECT DISTINCT
+		<include refid="select-story" />
+		FROM story s
+		where story_is_public='public'
+		AND s.story_location LIKE
+		'%' || #{value} || '%'
+		ORDER BY story_hit DESC, story_no DESC
+	</select>
+
+	<select id="allStoryListOrderByBookmark" resultMap="storyList">
+		SELECT
+		<include refid="select-story" />
+		FROM story s
+		WHERE s.story_is_public='public'
+		ORDER BY bookmark_count
+		DESC, story_no DESC
+	</select>
+
+	<select id="searchStoryOrderByBookmark" resultMap="storyList"
+		parameterType="string">
+		SELECT DISTINCT
+		<include refid="select-story" />
+		FROM story s
+		where story_is_public='public'
+		AND ((s.story_title LIKE '%'
+		|| #{value} || '%')
+		OR (s.story_content LIKE '%' || #{value} || '%')
+		OR
+		(s.story_location LIKE '%' || #{value} || '%'))
+		ORDER BY bookmark_count
+		DESC, story_no DESC
+	</select>
+
+	<select id="searchStoryByTitleOrderByBookmark" resultMap="storyList"
+		parameterType="string">
+		SELECT DISTINCT
+		<include refid="select-story" />
+		FROM story s
+		where story_is_public='public'
+		AND s.story_title LIKE '%'
+		|| #{value} || '%'
+		ORDER BY bookmark_count DESC, story_no DESC
+	</select>
+
+	<select id="searchStoryByContentOrderByBookmark" resultMap="storyList"
+		parameterType="string">
+		SELECT DISTINCT
+		<include refid="select-story" />
+		FROM story s
+		where story_is_public='public'
+		AND s.story_content LIKE '%'
+		|| #{value} || '%'
+		ORDER BY bookmark_count DESC, story_no DESC
+	</select>
+
+	<select id="searchStoryByLocationOrderByBookmark" resultMap="storyList"
+		parameterType="string">
+		SELECT DISTINCT
+		<include refid="select-story" />
+		FROM story s
+		where story_is_public='public'
+		AND s.story_location LIKE
+		'%' || #{value} || '%'
+		ORDER BY bookmark_count DESC, story_no DESC
+	</select>
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-config.dtd">
+   
+<configuration>
+
+   <!-- <properties resource="config/jdbc.properties"/> -->
+    
+    <settings>
+      <setting name="jdbcTypeForNull" value="NULL"/>
+   </settings>
+
+	<typeAliases>
+		<typeAlias type="spring.trip.domain.Member" alias="member" />
+		<typeAlias type="spring.trip.domain.Book" alias="book" />
+		<typeAlias type="spring.trip.domain.Write" alias="write" />
+		<typeAlias type="spring.trip.domain.Story" alias="story"/>
+		<typeAlias type="spring.trip.domain.Bookmark" alias="bookmark"/>
+		<typeAlias type="spring.trip.domain.Comment" alias="comment"/>
+		<typeAlias type="spring.trip.domain.Order" alias="order"/>
+	</typeAliases>
+   
+   <!-- <environments default="haha">
+      <environment id="haha">
+         <transactionManager type="JDBC"/>
+         <dataSource type="UNPOOLED">
+            <property name="driver" value="${JDBC.driver}"/>
+            <property name="url" value="${JDBC.url}"/>
+            <property name="username" value="${JDBC.username}"/>
+            <property name="password" value="${JDBC.password}"/>
+         </dataSource>
+      </environment>
+   </environments> -->
+
+	<mappers>
+		<mapper resource="sql/story.xml"/>
+		<mapper resource="sql/member.xml" />
+		<mapper resource="sql/book.xml" />
+		<mapper resource="sql/write.xml" />
+		<mapper resource="sql/bookmark.xml" />
+		<mapper resource="sql/comment.xml" />
+		<mapper resource="sql/order.xml"/>
+		<mapper resource="sql/report.xml"/>
+	</mappers>
+   
+</configuration>

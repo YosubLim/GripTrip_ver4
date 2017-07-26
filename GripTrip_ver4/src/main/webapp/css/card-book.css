@@ -1,0 +1,245 @@
+@CHARSET "UTF-8";
+@import url(http://fonts.googleapis.com/earlyaccess/nanummyeongjo.css);
+@import url('https://fonts.googleapis.com/css?family=Abril+Fatface');
+
+.sb-letter-b{
+	text-shadow: 0px 2px 3px rgba(255,255,255,0.5);
+	color: #c9c9c9;
+	opacity: 0.9;
+	font-size: 18px;
+	font-family: 'Abril Fatface', cursive;
+	
+	position: absolute;
+	top: -10px;
+	left: -10px;
+}
+
+/* Block */
+.card-b {
+  width: 275px;
+
+  /* font-family: 'Playfair Display', serif; */
+  font-family: 'Nanum Myeongjo', serif;
+  
+  text-align: center;
+  transition: all .125s;
+  transform: scale(1) translateY(0px);
+}
+
+/* Elements */
+.card__wrapper-b {
+  /* 우정 추가 */
+  height: 430px;
+  
+  
+  padding-top: .1px;
+  padding-bottom: .1px;
+  position: relative;
+
+  /* background-color: #ffffff; */
+  color: #999999;
+  box-shadow: 0 0 5px 0 rgba(0,0,0,.05);
+}
+.card__wrapper-b:after {
+  /* 우정 추가 */
+  height: 430px;
+	
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 15px;
+  right: 15px;
+  bottom: 0;
+  left: 15px;
+
+  box-shadow: 0 5px 15px 0 rgba(0,0,0,.2);
+  transition: all .125s;
+  transform: scale(1) translateY(0px);
+}
+.card__box-b {
+  /* 우정 추가 */
+  position: absolute;
+  bottom: -25px;
+  background-color: white;
+  opacity: 0.8;
+  width: 100%;
+	
+  /* padding-right: 35px;
+  padding-left: 35px; */
+  padding-right: 20px;
+  padding-left: 20px;
+  
+  margin-top: 25px;
+  margin-bottom: 25px;
+  max-height: 170px;
+  min-height: 170px;
+}
+.card__item-b  {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.card__item--small-b  {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.card__feature-b {
+  margin-top: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+  margin-left: 0;
+}
+.card__img-b {
+  display: block;
+  max-width: 100%;
+  height: 430px;
+  width: 275px;
+}
+.card__header-b {
+  position: relative;
+  z-index: 1;
+}
+.card__title-b {
+  color: #222222;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.25;
+  margin: auto;
+}
+.card__label-b {
+  color: #cccccc;
+
+  font-family: 'Montserrat', sans-serif;
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: .2em;
+}
+.card__divider-b {
+  display: block;
+  width: 100%;
+  height: 15px;
+
+  border: none;
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIyOHB4IiBoZWlnaHQ9IjE1cHgiIHZpZXdCb3g9IjAgMCAyOCAxNSIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjggMTUiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxwYXRoIGZpbGw9IiNERURFREUiIGQ9Ik0yNy41LDdoLTZDMjEuMiwzLjEsMTgsMCwxNCwwUzYuOCwzLjEsNi41LDdoLTZDMC4yLDcsMCw3LjIsMCw3LjVTMC4yLDgsMC41LDhoNmMwLjMsMy45LDMuNSw3LDcuNSw3czcuMi0zLjEsNy41LTdoNkMyNy44LDgsMjgsNy44LDI4LDcuNVMyNy44LDcsMjcuNSw3eiBNMTQsMWMzLjQsMCw2LjIsMi42LDYuNSw2SDcuNUM3LjgsMy42LDEwLjYsMSwxNCwxeiBNMTQsMTRjLTMuNCwwLTYuMi0yLjYtNi41LTZoMTIuOUMyMC4yLDExLjQsMTcuNCwxNCwxNCwxNHoiLz48L3N2Zz4=);
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.card__body-b {
+  font-size: 12px;
+  line-height: 1.75;
+}
+
+/* Modifiers */
+.card-b:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+}
+.card-b:hover .card__wrapper-b {
+  box-shadow: 0 0 10px 0 rgba(0,0,0,.05);
+}
+.card-b:hover .card__wrapper-b:after {
+  transform: scale(0.95) translateY(10px);
+}
+
+/* Demo */
+/* body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #e9ebea;
+  text-align: center;
+} */
+.card-b {
+  display: inline-block;
+  margin-top: calc( ( 100vh - 506px ) / 2 );
+  margin-right: 15px;
+  margin-left: 15px;
+  top: 50%;
+}
+
+.story-down-b{
+	margin-right: 150px;
+}
+
+
+.storyPicture-b{
+	position: relative;
+}
+
+.bookmark-b{
+	position: absolute;
+	top: -3px;
+	right: 10px;
+}
+
+
+
+
+
+/* 우정 추가 */
+.story-down-b{
+	position: absolute;
+	left: -90px;
+	bottom: 10px;
+	width: 270px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* Icon set - http://ionicons.com */
+figure.story1249-b {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  background: #1a1a1a;
+  color: #ffffff;
+}
+figure.story1249-b figcaption:before {
+  width: 90px;
+  height: 90px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  content: '';
+  z-index: 1;
+  background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 100%);
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 100%);
+  background-color: #20638f;
+  -webkit-transform: skew(-45deg) translateX(50%);
+  transform: skew(-45deg) translateX(50%);
+  border-right: 1px solid #20638f;
+}
+figure.book1249-b {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  background: #1a1a1a;
+  color: #ffffff;
+}
+figure.book1249-b figcaption:before {
+  width: 90px;
+  height: 90px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  content: '';
+  z-index: 1;
+  background-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 100%);
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.35) 100%);
+  background-color: #962d22;
+  -webkit-transform: skew(-45deg) translateX(50%);
+  transform: skew(-45deg) translateX(50%);
+  border-right: 1px solid #962d22
+;
+}
+
+.bookTitle>b{
+	font-family: 'Nanum Myeongjo';
+}

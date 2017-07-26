@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="bookmarkMapper">
+	<resultMap type="bookmark" id="bookmarkList">
+		<result property="bookmarkNo" column="bookmark_no" />
+		<result property="email" column="email" />
+		<result property="bookNo" column="book_no" />
+		<result property="storyNo" column="story_no" />
+	</resultMap>
+
+	<insert id="insertBookmark" parameterType="bookmark">
+		<selectKey keyProperty="bookmarkNo" resultType="int" order="BEFORE">
+			SELECT bookmark_seq.nextVal FROM dual
+		</selectKey>
+		INSERT into bookmark
+		values(#{bookmarkNo}, #{member.email}, #{bookNo},
+		#{storyNo})
+	</insert>
+
+	<delete id="deleteBookmark" parameterType="bookmark">
+		DELETE from bookmark
+		where book_no=#{bookNo} and story_no=#{storyNo} and email=#{member.email}
+	</delete>
+
+	<select id="myBookmark" resultMap="bookmarkList">
+		SELECT DISTINCT book_no ,
+		story_no
+		FROM bookmark bm
+		WHERE bm.email=#{value}
+	</select>
+
+	<delete id="deleteBookmarkByStoryNo" parameterType="bookmark">
+		DELETE from bookmark
+		where story_no=#{storyNo}
+	</delete>
+
+	<delete id="deleteBookmarkByBookNo" parameterType="bookmark">
+		DELETE from bookmark
+		where book_no=#{bookNo}
+	</delete>
+</mapper>
