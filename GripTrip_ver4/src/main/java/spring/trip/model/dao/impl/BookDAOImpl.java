@@ -17,7 +17,7 @@ public class BookDAOImpl implements BookDAO{
 
 	@Override
 	public void insertWriteBook(Book book) throws Exception {	
-		sqlSession.insert("bookMapper.insertWriteBook", book);
+		sqlSession.insert("bookMapper.insertwriteBook", book);
 	}
 
 	@Override

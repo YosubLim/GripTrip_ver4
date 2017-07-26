@@ -15,11 +15,11 @@
 		CDATA 문법: 단순한 스트링으로 처리하는 기법 -->
 	<select id="selectReport" resultType="string">
 		<![CDATA[
-		SELECT DISTINCT word, count FROM
-			(SELECT word, count, RANK() OVER(ORDER BY count DESC) 
-			AS RANKING FROM report)
-		WHERE RANKING <=5
+		SELECT DISTINCT word, count ,
+			(SELECT count(*)+1 from report where count > t.count) AS RANKING 
+		FROM report AS t
 		ORDER BY count desc
+		limit  0,5
 		]]>
 	</select>
 </mapper>

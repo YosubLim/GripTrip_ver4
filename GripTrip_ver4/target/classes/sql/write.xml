@@ -6,10 +6,10 @@
 
 	<insert id="insertWrite" parameterType="write">
 		<selectKey keyProperty="write_no" resultType="int" order="BEFORE">
-			select write_seq.nextVal from dual
+			SELECT IFNULL(MAX(write_no)+1, 0) FROM `write`
 		</selectKey>
 		INSERT
-		INTO write(write_no, email, book_no)
+		INTO `write`(write_no, email, book_no)
 		VALUES(#{write_no},
 		#{email}, #{book_no})
 	</insert>

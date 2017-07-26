@@ -6,9 +6,9 @@
 	<!-- sql 모듈화 -->
 	<sql id="select-story">
 		story_no, s.book_no, s.email, story_title, story_content, story_Location,
-		to_char(story_Trip_Date, 'YYYY/MM/DD') story_Trip_Date,
+		DATE_FORMAT(story_Trip_Date, '%Y-%m-%d') story_Trip_Date,
 		story_picture_url, story_is_public, story_hit,
-		to_char(story_create_date, 'YYYY/MM/DD') story_create_date,
+		DATE_FORMAT(story_create_date, '%Y-%m-%d') story_create_date,
 		story_latitude, story_longitude, s.bookmark, s.bookmark_count
 	</sql>
 

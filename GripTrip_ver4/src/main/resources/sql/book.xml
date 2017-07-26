@@ -6,12 +6,12 @@
 
 	<insert id="insertwriteBook" parameterType="book">
 		<selectKey keyProperty="book_no" resultType="int" order="BEFORE">
-			SELECT book_seq.nextVal FROM dual
+		 SELECT IFNULL(MAX(book_no)+1, 0) FROM book
 		</selectKey>
 		INSERT
 		INTO book(book_no, book_title, book_create_date,
 		book_picture_url, book_is_public, book_hit, price, bookmark_count)
-		VALUES(#{book_no}, #{book_title}, sysdate, #{book_picture_url},
+		VALUES(#{book_no}, #{book_title}, now(), #{book_picture_url},
 		#{book_is_public}, #{book_hit}, #{price}, 0)
 	</insert>
 
