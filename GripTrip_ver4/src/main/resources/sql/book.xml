@@ -73,7 +73,7 @@
 	</select>
 
 	<update id="updateHit" parameterType="int">
-		UPDATE book SET book_hit = nvl(book_hit, 0)+1 WHERE book_no=#{value}
+		UPDATE book SET book_hit = IFNULL(book_hit, 0)+1 WHERE book_no=#{value}
 		<!-- UPDATE book SET book_hit=book_hit+1 WHERE book_no=#{value} -->
 	</update>
 

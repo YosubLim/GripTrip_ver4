@@ -49,7 +49,7 @@
 
 	<insert id="insertStoryInfo" parameterType="story">
 		<selectKey keyProperty="storyNo" resultType="int" order="BEFORE">
-			SELECT story_seq.nextVal FROM dual
+			SELECT IFNULL(MAX(story_no)+1, 0) FROM story
 		</selectKey>
 		INSERT INTO story
 		VALUES(
@@ -63,7 +63,7 @@
 		#{storyPictureUrl},
 		#{storyIsPublic},
 		#{storyHit},
-		sysdate,
+		now(),
 		#{storyLatitude},
 		#{storyLongitude},
 		#{bookmark},
