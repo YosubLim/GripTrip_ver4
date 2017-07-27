@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import spring.trip.LifeCycle.ServletInit;
 import spring.trip.domain.Story;
 import spring.trip.model.dao.StoryDAO;
 import spring.trip.model.service.StoryService;
@@ -16,7 +17,7 @@ import spring.trip.model.service.StoryService;
 public class StoryServiceImpl implements StoryService{
 	@Autowired
 	private StoryDAO storyDAO;
-	private String path = "C:\\HNC\\csy\\GripTrip\\eclipse\\workspace\\GripTrip_ver4\\src\\main\\webapp\\upload\\";
+	private String path = ServletInit.path;
 
 	@Override
 	public void uploadStoryPhoto(Story story) throws Exception {

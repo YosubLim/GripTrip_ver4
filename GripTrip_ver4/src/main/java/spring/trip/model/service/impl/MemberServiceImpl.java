@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import spring.trip.LifeCycle.ServletInit;
 import spring.trip.domain.Member;
 import spring.trip.domain.Story;
 import spring.trip.model.dao.MemberDAO;
@@ -19,8 +20,9 @@ public class MemberServiceImpl implements MemberService{
 	// field
 	@Autowired
 	private MemberDAO memberDAO;
-	private String path = "C:\\HNC\\csy\\GripTrip\\eclipse\\workspace\\GripTrip_ver4\\src\\main\\webapp\\upload\\";
-	
+	//private String path = "C:\\HNC\\csy\\GripTrip\\eclipse\\workspace\\GripTrip_ver4\\src\\main\\webapp\\upload\\";
+	private String path = ServletInit.path;
+
 	@Override
 	public boolean isEmailExist(String email) {
 		return memberDAO.isEmailExist(email);
@@ -88,8 +90,8 @@ public class MemberServiceImpl implements MemberService{
 	         
 	            String newFileName = System.currentTimeMillis()+"_"+mFile.getOriginalFilename();
 	            vo.setMemberPictureUrl(newFileName);
-	            
-	            File copyFile = new File(path+newFileName);
+	            System.out.println("filePath : " + path);
+	            File copyFile = new File(path + newFileName);
 	            mFile.transferTo(copyFile);
 	            System.out.println("uploadMemberPhoto" + vo.getMemberPictureUrl());
 	         }

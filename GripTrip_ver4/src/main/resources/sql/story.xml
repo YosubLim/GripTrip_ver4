@@ -48,12 +48,13 @@
 		AND s.story_no=#{value} </select> -->
 
 	<insert id="insertStoryInfo" parameterType="story">
-		<selectKey keyProperty="storyNo" resultType="int" order="BEFORE">
-			SELECT IFNULL(MAX(story_no)+1, 0) FROM story
-		</selectKey>
-		INSERT INTO story
+		<selectKey resultType="int" keyProperty="storyNo" order="AFTER">
+        	SELECT LAST_INSERT_ID()   
+   		</selectKey>   
+		INSERT INTO story(book_no, email, story_title, story_content, story_location, story_trip_date,
+		story_picture_url, story_is_public, story_hit, story_create_date, story_latitude, story_longitude,
+		bookmark, bookmark_count)
 		VALUES(
-		#{storyNo},
 		#{book.book_no},
 		#{member.email},
 		#{storyTitle},

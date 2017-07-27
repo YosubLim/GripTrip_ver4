@@ -6,11 +6,11 @@
 <mapper namespace="orderMapper">
 	
 	<insert id="orderBook" parameterType="order">
-		<selectKey keyProperty="orderNo" resultType="int" order="BEFORE">
-			SELECT book_order_seq.nextVal FROM dual
-		</selectKey>
-		INSERT INTO book_order (order_no, email, book_no, quantity, order_create_date, total_price )
-		VALUES(#{orderNo}, #{member.email}, #{book.book_no}, #{quantity}, sysdate, #{totalPrice})
+		<selectKey resultType="int" keyProperty="orderNo" order="AFTER">
+        	SELECT LAST_INSERT_ID()   
+   		</selectKey>   
+		INSERT INTO book_order (email, book_no, quantity, order_create_date, total_price )
+		VALUES(#{member.email}, #{book.book_no}, #{quantity}, now(), #{totalPrice})
 	</insert>
 	
 	<delete id="cancelOrder" parameterType="int" >

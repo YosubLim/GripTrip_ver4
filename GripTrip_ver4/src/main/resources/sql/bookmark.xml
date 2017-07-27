@@ -11,11 +11,8 @@
 	</resultMap>
 
 	<insert id="insertBookmark" parameterType="bookmark">
-		<selectKey keyProperty="bookmarkNo" resultType="int" order="BEFORE">
-			SELECT bookmark_seq.nextVal FROM dual
-		</selectKey>
 		INSERT into bookmark
-		values(#{bookmarkNo}, #{member.email}, #{bookNo},
+		values(#{member.email}, #{bookNo},
 		#{storyNo})
 	</insert>
 

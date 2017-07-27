@@ -60,7 +60,7 @@ public class OrderController {
 		int book_no = Integer.parseInt(request.getParameter("book_no"));
 		int quantity = Integer.parseInt(request.getParameter("quantity"));
 		int price = Integer.parseInt(request.getParameter("price"));
-
+		
 		Book rbvo = bookService.getBookByBookNo(book_no);
 
 		Member mvo = (Member) session.getAttribute("mvo");

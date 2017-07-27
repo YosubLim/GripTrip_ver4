@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import spring.trip.LifeCycle.ServletInit;
 import spring.trip.domain.Book;
 import spring.trip.domain.Bookmark;
 import spring.trip.domain.Member;
@@ -49,7 +50,7 @@ public class BookController {
 	@Autowired
 	private CommentService commentService;
 
-	private String path = "C:\\HNC\\csy\\GripTrip\\eclipse\\workspace\\GripTrip_ver4\\src\\main\\webapp\\upload\\";
+	private String path = ServletInit.path;
 
 	// 스토리북 등록
 	@RequestMapping("insertWriteBook.do")
@@ -69,6 +70,7 @@ public class BookController {
 		if (mvo != null) {
 			bookService.insertWriteBook(book);
 			Write write = new Write();
+			//TODO 북넘 겟
 			write.setBook_no(book.getBook_no());
 			write.setEmail(mvo.getEmail());
 			writeService.insertWrite(write);

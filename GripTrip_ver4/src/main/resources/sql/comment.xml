@@ -22,7 +22,7 @@
 	<insert id="writeComment" parameterType="comment">
 		<selectKey keyProperty="commentNo" order="BEFORE"
 			resultType="int">
-			SELECT story_comment_seq.nextVal FROM dual
+			SELECT IFNULL(MAX(comment_no)+1, 0) FROM story_comment
 		</selectKey>
 		INSERT INTO story_comment
 		(comment_no,
@@ -41,7 +41,7 @@
 		#{member.email},
 		#{story.storyNo},
 		#{commentContent},
-		sysdate,
+		now(),
 		#{commentIsPublic},
 		#{parentCommentNo},
 		#{parentCommentEmail},
@@ -54,7 +54,7 @@
 	<insert id="writeRecomment" parameterType="comment">
 		<selectKey keyProperty="commentNo" order="BEFORE"
 			resultType="int">
-			SELECT story_comment_seq.nextVal FROM dual
+			SELECT IFNULL(MAX(comment_no)+1, 0) FROM story_comment
 		</selectKey>
 		INSERT INTO story_comment
 		(comment_no,
@@ -73,7 +73,7 @@
 		#{member.email},
 		#{story.storyNo},
 		#{commentContent},
-		sysdate,
+		now(),
 		#{commentIsPublic},
 		#{parentCommentNo},
 		#{parentCommentEmail},
@@ -99,11 +99,11 @@
 	<!-- SELECT : getMaxOrderIdWithSameDepth -->
 	<select id="getMaxOrderIdWithSameDepth" parameterType="comment"
 		resultType="int">
-		SELECT NVL((SELECT order_id FROM
-		(SELECT order_id FROM story_comment
-		where group_id=#{groupId}
-		AND depth=#{depth} ORDER BY order_id DESC)
-		WHERE rownum=1), 0) FROM dual
+		SELECT IFNULL((SELECT order_id FROM
+		(SELECT sc.order_id FROM story_comment as sc
+		where sc.group_id=#{groupId}
+		AND sc.depth=#{depth} ORDER BY sc.order_id DESC) as temp), 0) FROM story_comment as sc2
+		limit 0,1
 	</select>
 
 	<!-- SELECT : showAllVisibleCommentsOfStory -->

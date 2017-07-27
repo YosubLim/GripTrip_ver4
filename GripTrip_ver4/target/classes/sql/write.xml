@@ -5,13 +5,9 @@
 <mapper namespace="writeMapper">
 
 	<insert id="insertWrite" parameterType="write">
-		<selectKey keyProperty="write_no" resultType="int" order="BEFORE">
-			SELECT IFNULL(MAX(write_no)+1, 0) FROM `write`
-		</selectKey>
 		INSERT
-		INTO `write`(write_no, email, book_no)
-		VALUES(#{write_no},
-		#{email}, #{book_no})
+		INTO `write`(email, book_no)
+		VALUES(#{email}, #{book_no})
 	</insert>
 
 </mapper>
