@@ -184,6 +184,7 @@
     		                  dataType:"json",
     		                     
     		                  success:function(data){
+    		                	  alert('bookmark ajax success!')
     		                     $('#'+no).remove;
     		                     location.reload();
     		                  }//callback

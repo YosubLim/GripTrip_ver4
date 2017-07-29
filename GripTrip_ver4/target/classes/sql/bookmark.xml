@@ -11,7 +11,7 @@
 	</resultMap>
 
 	<insert id="insertBookmark" parameterType="bookmark">
-		INSERT into bookmark
+		INSERT into bookmark(email, book_no, story_no)
 		values(#{member.email}, #{bookNo},
 		#{storyNo})
 	</insert>
